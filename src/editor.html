@@ -1,0 +1,16 @@
+<div class="editor-row">
+
+  <div class="gf-form">
+    <span class="gf-form-label width-7">InfluxDB</span>
+    <div class="gf-form-select-wrapper max-width-23">
+      <select class="gf-form-input" 
+        ng-options="db for db in ctrl.dbs"
+        ng-model="ctrl.panel.datasource" 
+        ng-change="ctrl.configChanged()">
+      </select>
+    </div>
+    &nbsp;&nbsp; {{ ctrl.db.database }}
+  </div>
+
+
+</div>
