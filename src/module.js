@@ -8,15 +8,16 @@ import moment from 'moment';
 
 
 class ButtonPanelCtrl extends PanelCtrl {
-  constructor($scope, $injector, $q, $rootScope, $timeout, $http, contextSrv) {
+  constructor($scope, $injector, $q, $rootScope, $timeout, $http, contextSrv, timeSrv) {
     super($scope, $injector);
     this.datasourceSrv = $injector.get('datasourceSrv');
     this.injector = $injector;
     this.q = $q;
     this.$timeout = $timeout;
+    this.$rootScope = $rootScope;
     this.$http = $http;
     this.contextSrv = contextSrv;
-
+    this.timeSrv = timeSrv;
 
 
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
@@ -54,7 +55,15 @@ class ButtonPanelCtrl extends PanelCtrl {
         }
       }).then((rsp) => {
         this.writing = false;
+        this.$rootScope.appEvent('alert-success', [line.replace(',', '\n\n') ]);
+
+
+        this.timeSrv.setTime(this.timeSrv.time);
+
         console.log( "OK", rsp );
+
+      //  this.dashboard.refresh();
+
       }, err => {
         this.writing = false;
         console.log( "ERROR", err );
