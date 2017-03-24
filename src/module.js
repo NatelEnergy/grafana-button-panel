@@ -8,18 +8,18 @@ import moment from 'moment';
 
 
 class ButtonPanelCtrl extends PanelCtrl {
-  constructor($scope, $injector, $q, $rootScope, $timeout, $http) {
+  constructor($scope, $injector, $q, $rootScope, $timeout, $http, contextSrv) {
     super($scope, $injector);
     this.datasourceSrv = $injector.get('datasourceSrv');
     this.injector = $injector;
     this.q = $q;
     this.$timeout = $timeout;
     this.$http = $http;
+    this.contextSrv = contextSrv;
+
+
 
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
-    this.events.on('render', this.onRender.bind(this));
-    this.events.on('panel-initialized', this.onPanelInitalized.bind(this));
-    this.events.on('refresh', this.onRefresh.bind(this));
   }
 
   onInitEditMode() {
@@ -36,19 +36,19 @@ class ButtonPanelCtrl extends PanelCtrl {
       }
     });
 
-    this.addEditorTab('Options', 'public/plugins/natel-influx-admin-panel/editor.html',1);
+    this.addEditorTab('Options', 'public/plugins/natel-button-panel/editor.html',1);
     this.editorTabIndex = 1;
   }
 
-  writeData() {
-    console.log( "WRITE", this.writeDataText );
+  writeData(line) {
+    console.log( "WRITE", this.line );
     this.writing = true;
     this.error = null;
     return this.datasourceSrv.get(this.panel.datasource).then( (ds) => {
       this.$http({
         url: ds.urls[0] + '/write?db=' + ds.database,
         method: 'POST',
-        data: this.writeDataText,
+        data: line,
         headers: {
           "Content-Type": "plain/text"
         }
@@ -63,8 +63,13 @@ class ButtonPanelCtrl extends PanelCtrl {
     });
   }
 
-  onButtonClicked() {
-    console.log( "CLICK!!!!!" );
+  onButtonClicked( field, value ) {
+    var line = this.panel.measurment + ",who=\"" + this.contextSrv.user.email + '"';
+    if(field != null) {
+      line = line + "," + field +"=\"" + value + "\""; // TODO?? support numbers?
+    }
+
+    this.writeData(line);
   }
 }
 ButtonPanelCtrl.templateUrl = 'module.html';
