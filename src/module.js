@@ -18,7 +18,7 @@ class ButtonPanelCtrl extends PanelCtrl {
     this.$http = $http;
     this.contextSrv = contextSrv;
     this.timeSrv = timeSrv;
-
+    this.working = false;
 
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
   }
@@ -56,14 +56,9 @@ class ButtonPanelCtrl extends PanelCtrl {
       }).then((rsp) => {
         this.writing = false;
         this.$rootScope.appEvent('alert-success', [line.replace(',', '\n\n') ]);
-
-
         this.timeSrv.setTime(this.timeSrv.time);
-
         console.log( "OK", rsp );
-
-      //  this.dashboard.refresh();
-
+        return 'OK';
       }, err => {
         this.writing = false;
         console.log( "ERROR", err );
@@ -73,12 +68,76 @@ class ButtonPanelCtrl extends PanelCtrl {
   }
 
   onButtonClicked( field, value ) {
+    this.working = true;
+
     var line = this.panel.measurment + ",who=\"" + this.contextSrv.user.email + '"';
     if(field != null) {
       line = line + "," + field +"=\"" + value + "\""; // TODO?? support numbers?
     }
 
-    this.writeData(line);
+    this.writeData(line).then( () => {
+      if(!_.isNil( this.panel.slackurl ) ) {
+        return this.datasourceSrv.get(this.panel.datasource).then( (ds) => {
+          var q = 'SELECT  "who","computer" FROM "current" WHERE "product" = \''+value+'\'';
+          ds._seriesQuery( q ).then( (res)=> {
+            var info = '';
+            _.forEach(res.results, (s)=> {
+              _.forEach(s.series, (r)=> {
+                _.forEach(r.values, (v)=> {
+                  info += '<@'+v[1]+'> '+ v[2] + '\n';
+                });
+              });
+            });
+
+            var name = this.contextSrv.user.email.substring(0, this.contextSrv.user.email.indexOf('@'));
+            var data = {
+              "text":  "<@"+name+"> wants a license for *"+value+"*", 
+              "username": "nx-license-bot-"+value, 
+              "icon_emoji": ":monkey_face:",
+              "attachments": []
+            };
+
+            if(!_.isNil(this.broadcastmsg)) {
+              data.attachments.push( {
+                "title": this.broadcastmsg,
+                "color": "#b5052e"
+              });
+              this.broadcastmsg = null;
+            }
+
+            if(info.length > 0) {
+              data.attachments.push( {
+                "title": "Current Licenses",
+                "title_link": "http://hangar-controls:3000/dashboard/db/license-info-nx",
+                "text": info,
+                "color": "#e2a522"
+              });
+            }
+
+            this.$http({
+              data: JSON.stringify(data),
+              headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': undefined
+              },
+              method: 'POST',
+              url: this.panel.slackurl
+            }).then((rsp) => {
+              console.log( "Notificatoin sent", rsp );
+              this.$rootScope.appEvent('alert-success', ['Slack Notificatoin Sent']);
+              this.working = false;
+            }, err => {
+              console.log("Error sending slack", err);
+              this.$rootScope.appEvent('alert-error', ['Slack Notification', err]);
+              this.working = false;
+            });
+          });
+        });
+      }
+      else {
+        this.working = false;
+      }
+    });
   }
 }
 ButtonPanelCtrl.templateUrl = 'module.html';

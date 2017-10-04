@@ -14,15 +14,12 @@
       "large": "img/buttons.svg"
     },
     "links": [
-      {"name": "Project site", "url": "https://github.com/NatelEnergy/grafana-influx-admin"},
-      {"name": "MIT License",  "url": "https://github.com/NatelEnergy/grafana-influx-admin/blob/master/LICENSE"},
+      {"name": "Project site", "url": "https://github.com/NatelEnergy/grafana-button-panel"},
+      {"name": "MIT License",  "url": "https://github.com/NatelEnergy/grafana-button-panel/blob/master/LICENSE"},
       {"name": "Natel Energy", "url": "http://www.natelenergy.com/"}
     ],
-    "screenshots": [
-      { "name": "Current Queries", "path": "img/screenshot-current.png" }
-    ],
-    "version": "0.0.1",
-    "updated": "2017-02-28"
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
   },
 
   "dependencies": {
