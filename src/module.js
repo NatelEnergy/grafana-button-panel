@@ -124,7 +124,7 @@ class ButtonPanelCtrl extends PanelCtrl {
               url: this.panel.slackurl
             }).then((rsp) => {
               console.log( "Notificatoin sent", rsp );
-              this.$rootScope.appEvent('alert-success', ['Slack Notificatoin Sent']);
+              this.$rootScope.appEvent('alert-success', ['Slack Notification Sent']);
               this.working = false;
             }, err => {
               console.log("Error sending slack", err);
