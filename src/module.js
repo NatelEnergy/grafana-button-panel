@@ -118,7 +118,7 @@ class ButtonPanelCtrl extends PanelCtrl {
               data: JSON.stringify(data),
               headers: {
                 'Accept': 'application/json, text/plain, */*',
-                'Content-Type': undefined
+                'Content-Type': undefined // Need to remove this so CORS works!
               },
               method: 'POST',
               url: this.panel.slackurl
