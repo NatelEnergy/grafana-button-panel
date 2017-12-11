@@ -51,7 +51,8 @@ class ButtonPanelCtrl extends PanelCtrl {
         method: 'POST',
         data: line,
         headers: {
-          "Content-Type": "plain/text"
+          'Content-Type': "plain/text",
+          'Authorization':  'Basic ' + btoa(this.panel.username + ":" + this.panel.password)
         }
       }).then((rsp) => {
         this.writing = false;
