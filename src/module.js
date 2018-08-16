@@ -8,6 +8,7 @@ import moment from 'moment';
 
 
 class ButtonPanelCtrl extends PanelCtrl {
+  /** @ngInject */
   constructor($scope, $injector, $q, $rootScope, $timeout, $http, contextSrv, timeSrv) {
     super($scope, $injector);
     this.datasourceSrv = $injector.get('datasourceSrv');
