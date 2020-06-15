@@ -49,6 +49,7 @@ class ButtonPanelCtrl extends PanelCtrl {
     return this.datasourceSrv.get(this.panel.datasource).then( (ds) => {
       this.$http({
         url: ds.urls[0] + '/write?db=' + ds.database,
+        // url: "https://b23.natelenergy.com/influx" + '/write?db=' + ds.database,
         method: 'POST',
         data: line,
         headers: {
