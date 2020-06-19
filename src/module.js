@@ -112,7 +112,7 @@ class ButtonPanelCtrl extends PanelCtrl {
             if(info.length > 0) {
               data.attachments.push( {
                 "title": "Current Licenses",
-                "title_link": "http://hangar-controls:3000/dashboard/db/license-info-nx",
+                "title_link": "https://b23.natelenergy.com/grafana/d/000000039/license-info-nx",
                 "text": info,
                 "color": "#e2a522"
               });
