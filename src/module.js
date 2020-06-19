@@ -46,9 +46,12 @@ class ButtonPanelCtrl extends PanelCtrl {
     console.log( "WRITE", this.line );
     this.writing = true;
     this.error = null;
+    console.log("datasource: ", this.datasourceSrv.get(this.panel.datasource));
     return this.datasourceSrv.get(this.panel.datasource).then( (ds) => {
       this.$http({
-        url: ds.urls[0] + '/write?db=' + ds.database,
+        // TODO update grafana version and remove hardcoded url
+        // url: ds.urls[0] + '/write?db=' + ds.database,
+        url: 'https://b23.natelenergy.com/grafana/api/datasources/proxy/9' + '/write?db=' + ds.database,
         method: 'POST',
         data: line,
         headers: {
