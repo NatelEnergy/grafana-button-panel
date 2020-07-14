@@ -1,6 +1,6 @@
 ## Simple Button Panel
 
-This is a panel with some buttons on it
+This is a panel used for requesting NX and CCM licenes in the "License Info" dashboard.
 
 
 #### Changelog
